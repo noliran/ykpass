@@ -1,0 +1,28 @@
+#!/bin/bash
+
+ASK_CMD="osx_prompt"
+TYPE_CMD="osx_type"
+
+osx_focus() {
+  osascript <<EOT
+        tell app "System Events"
+                set frontmostApplicationName to name of 1st process whose frontmost is true
+        end tell
+        tell app frontmostApplicationName
+                activate
+        end tell
+EOT
+}
+
+osx_prompt() {
+  osascript -e "set result to text returned of (display dialog \"$1\" default answer \"$2\" buttons {\"OK\"} default button 1 with title \"$3\")"
+  osascript -e beep
+}
+
+osx_type() {
+  osx_focus
+  echo "$1" | osascript -e 'tell app "System Events"' -e 'set stdin to do shell script "cat /dev/fd/10"' -e 'keystroke stdin' -e 'end tell' 10<&0
+}
+
+source ykpass.osx.base
+source ykpass.run

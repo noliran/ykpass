@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source ykpass.osx.base
+source ykpass.nix.cli

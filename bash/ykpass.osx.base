@@ -1,0 +1,5 @@
+#!/bin/bash
+
+SALT=$(security find-generic-password -a ykpass -gw)
+
+source ykpass.nix.base

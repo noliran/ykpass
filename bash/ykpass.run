@@ -1,0 +1,28 @@
+#!/bin/bash
+
+CHALLENGE=$($ASK_CMD "Generate password for: ")
+
+if [ -z "$CHALLENGE" ] ; then
+  echo "CHALLENGE is empty; giving up"
+  exit 1
+fi
+
+if [ -z "$SALT" ] ; then
+  echo "SALT is empty; giving up"
+  exit 1
+fi
+
+METHOD=m1_cmd
+if [ "${CHALLENGE: -1}" = "!" ] ; then
+  METHOD=m2_cmd
+  CHALLENGE=${CHALLENGE%?}
+elif [ "${CHALLENGE: -1}" = "@" ] ; then
+  METHOD=m3_cmd
+  CHALLENGE=${CHALLENGE%?}
+fi
+
+RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp -i- | xxd -r -p)
+
+RESPONSE=$($METHOD $RESPONSE)
+
+$TYPE_CMD $RESPONSE

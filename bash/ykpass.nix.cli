@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ASK_CMD="prompt"
+TYPE_CMD="printpass"
+
+prompt() {
+  read -p "$1" RETURN
+  echo -en $RETURN
+}
+
+printpass() {
+  echo $1
+}
+
+source ykpass.nix.base
+source ykpass.run
