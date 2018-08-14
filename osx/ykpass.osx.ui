@@ -1,5 +1,7 @@
 #!/bin/bash
 
+YKPASS_ROOT=${0%/*}/../
+
 ASK_CMD="osx_prompt"
 TYPE_CMD="osx_type"
 
@@ -24,5 +26,5 @@ osx_type() {
   echo "$1" | osascript -e 'tell app "System Events"' -e 'set stdin to do shell script "cat /dev/fd/10"' -e 'keystroke stdin' -e 'end tell' 10<&0
 }
 
-source ykpass.osx.base
-source ykpass.run
+source $YKPASS_ROOT/osx/ykpass.osx.base
+source $YKPASS_ROOT/bash/ykpass.run

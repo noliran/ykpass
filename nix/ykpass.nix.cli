@@ -1,5 +1,7 @@
 #!/bin/bash
 
+YKPASS_ROOT=${0%/*}/../
+
 ASK_CMD="prompt"
 TYPE_CMD="printpass"
 
@@ -12,5 +14,5 @@ printpass() {
   echo $1
 }
 
-source ykpass.nix.base
-source ykpass.run
+source $YKPASS_ROOT/nix/ykpass.nix.base
+source $YKPASS_ROOT/bash/ykpass.run

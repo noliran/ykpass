@@ -1,0 +1,6 @@
+#!/bin/bash
+
+YKPASS_ROOT=${0%/*}/../
+
+source $YKPASS_ROOT/osx/ykpass.osx.base
+source $YKPASS_ROOT/nix/ykpass.nix.cli

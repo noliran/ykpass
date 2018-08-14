@@ -2,4 +2,4 @@
 
 SALT=$(security find-generic-password -a ykpass -gw)
 
-source ykpass.nix.base
+source $YKPASS_ROOT/nix/ykpass.nix.base
