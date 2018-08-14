@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword" />
+            android:inputType="textVisiblePassword" />
 
         <TextView
             android:id="@+id/tv3"
@@ -122,5 +122,15 @@
                 android:src="?android:attr/actionModeCopyDrawable" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Clear"
+            tools:layout_editor_absoluteX="148dp"
+            tools:layout_editor_absoluteY="380dp" />
+
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

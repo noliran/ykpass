@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
     private EditText etPasswordId;
     private EditText etResult;
     private Button btnGenerate;
+    private Button btnClear;
     private ImageButton btnCopy;
     private RadioGroup rgMethod;
 
@@ -39,6 +40,7 @@ public class MainActivity extends Activity {
         etResult = findViewById(R.id.etResult);
         btnGenerate = findViewById(R.id.btnGenerate);
         btnCopy = findViewById(R.id.btnCopy);
+        btnClear = findViewById(R.id.btnClear);
         rgMethod = findViewById(R.id.rgMethod);
 
         btnGenerate.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +60,20 @@ public class MainActivity extends Activity {
                 ClipData clip = ClipData.newPlainText("ykpassDroid", etResult.getText());
                 clipboard.setPrimaryClip(clip);
 
-                Toast.makeText(MainActivity.this, "Copied", Toast.LENGTH_SHORT).show();
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Copied", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etPasswordId.setText("");
+                etResult.setText("");
             }
         });
 
