@@ -12,3 +12,7 @@ m2_cmd() {
 m3_cmd() {
   echo -en "$1" | base32 | cut -b 1-12
 }
+
+m4_cmd() {
+  echo -en "$1" | base32 | cut -b 1-8
+}

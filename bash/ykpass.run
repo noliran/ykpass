@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CHALLENGE=$($ASK_CMD "Generate password for: ")
+DEFAULT_CHALLENGE=$(which default_ykpass_challenge >/dev/null 2>/dev/null && default_ykpass_challenge)
+
+CHALLENGE=$($ASK_CMD "Generate password for: " $DEFAULT_CHALLENGE)
 
 if [ -z "$CHALLENGE" ] ; then
   echo "CHALLENGE is empty; giving up"
@@ -18,6 +20,9 @@ if [ "${CHALLENGE: -1}" = "!" ] ; then
   CHALLENGE=${CHALLENGE%?}
 elif [ "${CHALLENGE: -1}" = "@" ] ; then
   METHOD=m3_cmd
+  CHALLENGE=${CHALLENGE%?}
+elif [ "${CHALLENGE: -1}" = "#" ] ; then
+  METHOD=m4_cmd
   CHALLENGE=${CHALLENGE%?}
 fi
 
