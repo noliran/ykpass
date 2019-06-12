@@ -24,6 +24,9 @@ elif [ "${CHALLENGE: -1}" = "@" ] ; then
 elif [ "${CHALLENGE: -1}" = "#" ] ; then
   METHOD=m4_cmd
   CHALLENGE=${CHALLENGE%?}
+elif [ "${CHALLENGE: -1}" = "$" ] ; then
+  METHOD=m5_cmd
+  CHALLENGE=${CHALLENGE%?}
 fi
 
 RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp -i- | xxd -r -p)

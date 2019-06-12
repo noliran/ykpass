@@ -16,3 +16,8 @@ m3_cmd() {
 m4_cmd() {
   echo -en "$1" | base32 | cut -b 1-8
 }
+
+m5_cmd() {
+  T=$(echo -en "$1" | base32 | cut -b 1-8)
+  echo -en "`echo -en "$T" | cut -b 1-4``echo -en "$T" | cut -b 5-8 | tr [:upper:] [:lower:]`"
+}
