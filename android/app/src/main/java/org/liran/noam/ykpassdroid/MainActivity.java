@@ -101,6 +101,11 @@ public class MainActivity extends Activity {
                 return BaseEncoding.base64().encode(input).substring(0, 16);
             case R.id.rb3:
                 return BaseEncoding.base32().encode(input).substring(0, 12);
+            case R.id.rb4:
+                return BaseEncoding.base32().encode(input).substring(0, 8);
+            case R.id.rb5:
+                String s = BaseEncoding.base32().encode(input).substring(0, 8);
+                return s.substring(0, 4) + s.substring(4, 8).toLowerCase();
             default:
                 throw new RuntimeException(String.format("Unknown method %d", method));
         }
