@@ -4,23 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:padding="12dp"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/tv1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Salt:" />
 
@@ -29,11 +27,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword" />
+            android:inputType="numberPassword" />
 
         <TextView
             android:id="@+id/tv2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Password ID:" />
 
@@ -44,59 +42,68 @@
             android:ems="10"
             android:inputType="textVisiblePassword" />
 
-        <TextView
-            android:id="@+id/tv3"
+
+        <LinearLayout
+            android:id="@+id/llMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Method:" />
+            android:orientation="vertical">
 
-        <RadioGroup
-            android:id="@+id/rgMethod"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/rb1"
+            <TextView
+                android:id="@+id/tv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Default"
-                android:tooltipText="B85 (16)" />
+                android:text="Method:" />
 
-            <RadioButton
-                android:id="@+id/rb2"
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/rgMethod"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="!"
-                android:tooltipText="B64 (16)" />
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/rb3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@"
-                android:tooltipText="B32 (12)" />
+                <RadioButton
+                    android:id="@+id/rb1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Default"
+                    android:tooltipText="B85 (16)" />
 
-            <RadioButton
-                android:id="@+id/rb4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="#"
-                android:tooltipText="B32 (8)" />
+                <RadioButton
+                    android:id="@+id/rb2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="!"
+                    android:tooltipText="B64 (16)" />
 
-            <RadioButton
-                android:id="@+id/rb5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="$"
-                android:tooltipText="B32 (8 mixed-case)" />
+                <RadioButton
+                    android:id="@+id/rb3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@"
+                    android:tooltipText="B32 (12)" />
 
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="#"
+                    android:tooltipText="B32 (8)" />
+
+                <RadioButton
+                    android:id="@+id/rb5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="$"
+                    android:tooltipText="B32 (8 mixed-case)" />
+
+            </RadioGroup>
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnGenerate"
@@ -104,50 +111,57 @@
             android:layout_height="wrap_content"
             android:text="Generate" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="49dp" />
-
-        <TextView
-            android:id="@+id/tv4"
+        <LinearLayout
+            android:id="@+id/llStandalone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Result:" />
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="36dp" />
 
-            <EditText
-                android:id="@+id/etResult"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:editable="false"
-                android:ems="10"
-                android:inputType="none"
-                android:selectAllOnFocus="true"
-                android:singleLine="true" />
-
-            <ImageButton
-                android:id="@+id/btnCopy"
+            <TextView
+                android:id="@+id/tv4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:src="?android:attr/actionModeCopyDrawable" />
-        </LinearLayout>
+                android:text="Result:" />
 
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Clear"
-            tools:layout_editor_absoluteX="148dp"
-            tools:layout_editor_absoluteY="380dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="none"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true" />
+
+                <ImageButton
+                    android:id="@+id/btnCopy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:src="?android:attr/actionModeCopyDrawable" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnClear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Clear"
+                tools:layout_editor_absoluteX="148dp"
+                tools:layout_editor_absoluteY="380dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
