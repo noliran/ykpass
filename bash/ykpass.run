@@ -15,22 +15,32 @@ if [ -z "$SALT" ] ; then
 fi
 
 METHOD=m1_cmd
+LENGTH=16
 if [ "${CHALLENGE: -1}" = "!" ] ; then
   METHOD=m2_cmd
+  LENGTH=16
   CHALLENGE=${CHALLENGE%?}
 elif [ "${CHALLENGE: -1}" = "@" ] ; then
   METHOD=m3_cmd
+  LENGTH=12
   CHALLENGE=${CHALLENGE%?}
 elif [ "${CHALLENGE: -1}" = "#" ] ; then
   METHOD=m4_cmd
+  LENGTH=8
   CHALLENGE=${CHALLENGE%?}
 elif [ "${CHALLENGE: -1}" = "$" ] ; then
   METHOD=m5_cmd
+  LENGTH=8
   CHALLENGE=${CHALLENGE%?}
 fi
 
 RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp -i- | xxd -r -p)
 
-RESPONSE=$($METHOD $RESPONSE)
+RESPONSE=$($METHOD "$RESPONSE")
 
-$TYPE_CMD $RESPONSE
+if [ ${#RESPONSE} -ne $LENGTH ] ; then
+  echo "Length assertion: got ${#RESPONSE} characters but expected $LENGTH"
+  exit 1
+fi
+
+$TYPE_CMD "$RESPONSE"

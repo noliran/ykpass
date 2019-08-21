@@ -14,19 +14,26 @@ import android.service.autofill.SaveCallback;
 import android.service.autofill.SaveRequest;
 import android.support.annotation.NonNull;
 import android.view.autofill.AutofillId;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.google.common.base.Strings;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class YkpassAutofillService extends AutofillService {
+    public static final List<String> BLACKLISTED_PACKAGES = Arrays.asList(
+            YkpassAutofillService.class.getPackage().getName()
+    );
+
     @Override
     public void onFillRequest(@NonNull FillRequest request, @NonNull CancellationSignal cancellationSignal, @NonNull FillCallback callback) {
         List<AssistStructure.ViewNode> viewNodes = request.getFillContexts().stream()
@@ -35,9 +42,16 @@ public class YkpassAutofillService extends AutofillService {
                 .flatMap(viewNode -> flattenViewNodes(viewNode.getRootViewNode()))
                 .collect(Collectors.toList());
 
-        String idPackage = viewNodes.stream()
+        List<String> packagesList = viewNodes.stream()
                 .map(AssistStructure.ViewNode::getIdPackage)
                 .filter(s -> !Strings.isNullOrEmpty(s))
+                .collect(Collectors.toList());
+
+        if (packagesList.stream().anyMatch(BLACKLISTED_PACKAGES::contains)) {
+            return;
+        }
+
+        String idPackage = packagesList.stream()
                 .map(s -> StringUtils.reverseDelimited(s, '.'))
                 .findFirst().orElse(null);
 
@@ -50,7 +64,8 @@ public class YkpassAutofillService extends AutofillService {
                 .filter(n -> n.getClassName() != null)
                 .filter(n -> n.getClassName().equals(EditText.class.getName()))
                 .filter(n -> (n.getAutofillHints() != null && n.getAutofillHints().length > 0 && n.getAutofillHints()[0].contains("password")) ||
-                        (n.getIdEntry() != null && n.getIdEntry().contains("password")))
+                        (n.getIdEntry() != null && n.getIdEntry().contains("password")) ||
+                        isPasswordInputType(n.getInputType()))
                 .map(AssistStructure.ViewNode::getAutofillId)
                 .findFirst().orElse(null);
 
@@ -99,5 +114,17 @@ public class YkpassAutofillService extends AutofillService {
     @Override
     public void onSaveRequest(@NonNull SaveRequest request, @NonNull SaveCallback callback) {
 
+    }
+
+    // Taken from TextView.java
+    static boolean isPasswordInputType(int inputType) {
+        final int variation =
+                inputType & (EditorInfo.TYPE_MASK_CLASS | EditorInfo.TYPE_MASK_VARIATION);
+        return variation
+                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
+                || variation
+                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)
+                || variation
+                == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 }
