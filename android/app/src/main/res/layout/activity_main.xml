@@ -22,12 +22,29 @@
             android:layout_height="wrap_content"
             android:text="Salt:" />
 
-        <EditText
-            android:id="@+id/etSalt"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etSalt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="numberPassword" />
+            <TextView
+                android:id="@+id/tvSaltColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="30dp"
+                android:height="30dp"
+                android:layout_margin="5dip"
+                android:text="0"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv2"
@@ -39,7 +56,6 @@
             android:id="@+id/etPasswordId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:inputType="textVisiblePassword" />
 
 
