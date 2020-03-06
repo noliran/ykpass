@@ -1,12 +1,13 @@
 #!/bin/bash
 
-DEFAULT_CHALLENGE=$(which default_ykpass_challenge >/dev/null 2>/dev/null && default_ykpass_challenge)
-
-CHALLENGE=$($ASK_CMD "Generate password for: " $DEFAULT_CHALLENGE)
-
 if [ -z "$CHALLENGE" ] ; then
-  echo "CHALLENGE is empty; giving up"
-  exit 1
+  DEFAULT_CHALLENGE=$(which default_ykpass_challenge >/dev/null 2>/dev/null && default_ykpass_challenge)
+  CHALLENGE=$($ASK_CMD "Generate password for: " $DEFAULT_CHALLENGE)
+  
+  if [ -z "$CHALLENGE" ] ; then
+    echo "CHALLENGE is empty; giving up"
+    exit 1
+  fi
 fi
 
 if [ -z "$SALT" ] ; then
@@ -34,7 +35,7 @@ elif [ "${CHALLENGE: -1}" = "$" ] ; then
   CHALLENGE=${CHALLENGE%?}
 fi
 
-RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp -i- | xxd -r -p)
+RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp.exe -i- | xxd -r -p)
 
 RESPONSE=$($METHOD "$RESPONSE")
 
