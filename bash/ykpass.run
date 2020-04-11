@@ -1,9 +1,9 @@
 #!/bin/bash
 
-DEFAULT_CHALLENGE=$(which default_ykpass_challenge >/dev/null 2>/dev/null && default_ykpass_challenge)
-
 if [ -z "$CHALLENGE" ] ; then
+  DEFAULT_CHALLENGE=$(which default_ykpass_challenge >/dev/null 2>/dev/null && default_ykpass_challenge)
   CHALLENGE=$($ASK_CMD "Generate password for: " $DEFAULT_CHALLENGE)
+
   if [ -z "$CHALLENGE" ] ; then
     echo "CHALLENGE is empty; giving up"
     exit 1
