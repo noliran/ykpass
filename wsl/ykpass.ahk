@@ -19,15 +19,22 @@ $!^p::
     If (ErrorLevel = 1) or (sChallenge = "")
         Return
 
-    SoundBeep
+	SoundBeep
+    SetTimer, Beeper, 750
 
     sSalt := Trim(StdoutToVar_CreateProcess("powershell .\get-ykpass.ps1"), "`n")
     sCmdLine := "wsl CHALLENGE=" . sChallenge . " SALT=" . sSalt . " bash -l -c " . Chr(34) . "~/git/ykpass/nix/ykpass.nix.cli" . Chr(34)
     
     sPassword := Trim(StdoutToVar_CreateProcess(sCmdLine), "`n")
 
+	SetTimer, Beeper, Off
+
 	;MsgBox, %sPassword%
     SendRaw, %sPassword%
+Return
+
+Beeper:
+	SoundBeep
 Return
 
 GetActiveBrowserURL() {
