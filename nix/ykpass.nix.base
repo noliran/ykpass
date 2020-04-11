@@ -2,22 +2,22 @@
 
 m1_cmd() {
   # Uses https://github.com/roukaour/ascii85
-  echo -en "$1" | ascii85 -n | cut -b 1-16
+  ascii85 -n | cut -b 1-16
 }
 
 m2_cmd() {
-  echo -en "$1" | base64 | cut -b 1-16
+  base64 | cut -b 1-16
 }
 
 m3_cmd() {
-  echo -en "$1" | base32 | cut -b 1-12
+  base32 | cut -b 1-12
 }
 
 m4_cmd() {
-  echo -en "$1" | base32 | cut -b 1-8
+  base32 | cut -b 1-8
 }
 
 m5_cmd() {
-  T=$(echo -en "$1" | base32 | cut -b 1-8)
+  T=$(base32 | cut -b 1-8)
   echo -en "`echo -en "$T" | cut -b 1-4``echo -en "$T" | cut -b 5-8 | tr [:upper:] [:lower:]`"
 }
