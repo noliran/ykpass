@@ -35,7 +35,7 @@ elif [ "${CHALLENGE: -1}" = "$" ] ; then
   CHALLENGE=${CHALLENGE%?}
 fi
 
-RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp.exe -i- | xxd -r -p | $METHOD)
+RESPONSE=$(echo -en "$SALT,$CHALLENGE" | ykchalresp -i- | xxd -r -p | $METHOD)
 
 if [ ${#RESPONSE} -ne $LENGTH ] ; then
   echo "Length assertion: got ${#RESPONSE} characters but expected $LENGTH"
