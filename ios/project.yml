@@ -15,6 +15,9 @@ settings:
     CODE_SIGN_STYLE: Automatic
     # Set your team here, or pick it in Xcode under Signing & Capabilities.
     DEVELOPMENT_TEAM: ""
+    # App bundle ID; the AutoFill extension uses "<this>.autofill".
+    # Change it here (or override on the xcodebuild command line) if it's taken.
+    YKPASS_BUNDLE_ID: org.liran.noam.ykpass
 
 packages:
   YubiKit:
@@ -39,7 +42,7 @@ targets:
       - target: YkpassAutoFill
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: org.liran.noam.ykpass
+        PRODUCT_BUNDLE_IDENTIFIER: $(YKPASS_BUNDLE_ID)
         TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     info:
@@ -81,7 +84,7 @@ targets:
       - sdk: AuthenticationServices.framework
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: org.liran.noam.ykpass.autofill
+        PRODUCT_BUNDLE_IDENTIFIER: $(YKPASS_BUNDLE_ID).autofill
         TARGETED_DEVICE_FAMILY: "1,2"
     info:
       path: YkpassAutoFill/Info.plist

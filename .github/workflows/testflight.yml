@@ -1,0 +1,100 @@
+name: iOS TestFlight
+
+# Builds, signs (Apple cloud signing via an App Store Connect API key) and uploads to TestFlight.
+# Setup: see ios/README.md, "TestFlight".
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "Build number (leave empty to use the run number)"
+        required: false
+        default: ""
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      ASC_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+      BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID || 'org.liran.noam.ykpass' }}
+      BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
+    steps:
+      - name: Check secrets
+        run: |
+          missing=0
+          for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
+            if [ -z "${!name}" ]; then echo "::error::Secret for $name is not set (see ios/README.md, TestFlight)"; missing=1; fi
+          done
+          exit $missing
+
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        working-directory: ios
+        run: xcodegen
+
+      - name: Install API key
+        run: |
+          mkdir -p "$RUNNER_TEMP/keys"
+          KEY_PATH="$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8"
+          printf '%s\n' "$ASC_KEY" > "$KEY_PATH"
+          echo "ASC_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: Archive
+        working-directory: ios
+        run: |
+          xcodebuild archive \
+            -project Ykpass.xcodeproj \
+            -scheme Ykpass \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Ykpass.xcarchive" \
+            -skipPackagePluginValidation \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            YKPASS_BUNDLE_ID="$BUNDLE_ID" \
+            CODE_SIGN_STYLE=Automatic \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+
+      - name: Upload to TestFlight
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>$APPLE_TEAM_ID</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+            <key>uploadSymbols</key><true/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Ykpass.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          echo "Uploaded build $BUILD_NUMBER of $BUNDLE_ID. It will appear in App Store Connect → TestFlight after processing." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove API key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keys"
