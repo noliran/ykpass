@@ -1,0 +1,119 @@
+# Generate Ykpass.xcodeproj with XcodeGen: `brew install xcodegen && xcodegen` (from this directory).
+name: Ykpass
+
+options:
+  bundleIdPrefix: org.liran.noam
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    # Set your team here, or pick it in Xcode under Signing & Capabilities.
+    DEVELOPMENT_TEAM: ""
+
+packages:
+  YubiKit:
+    url: https://github.com/Yubico/yubikit-ios
+    from: "4.7.0"
+  YkpassCore:
+    path: YkpassCore
+
+targets:
+  Ykpass:
+    type: application
+    platform: iOS
+    sources:
+      - Ykpass
+      - Shared
+      # The salt indicator uses the same icon font as the Android app.
+      - path: ../android/app/src/main/assets/fa-solid-900.ttf
+        buildPhase: resources
+    dependencies:
+      - package: YubiKit
+      - package: YkpassCore
+      - target: YkpassAutoFill
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.liran.noam.ykpass
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    info:
+      path: Ykpass/Info.plist
+      properties:
+        NFCReaderUsageDescription: ykpass reads your YubiKey over NFC to generate passwords.
+        com.apple.developer.nfc.readersession.iso7816.select-identifiers:
+          - A000000527200101 # YubiKey OTP application (HMAC-SHA1 challenge-response)
+          - A000000527471117 # YubiKey management application
+        CFBundleDisplayName: ykpass
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedExternalAccessoryProtocols:
+          - com.yubico.ylp # YubiKey 5Ci (Lightning)
+    entitlements:
+      path: Ykpass/Ykpass.entitlements
+      properties:
+        com.apple.developer.nfc.readersession.formats: [TAG]
+        com.apple.developer.authentication-services.autofill-credential-provider: true
+
+  YkpassAutoFill:
+    type: app-extension
+    platform: iOS
+    sources:
+      - YkpassAutoFill
+      - Shared
+      - path: ../android/app/src/main/assets/fa-solid-900.ttf
+        buildPhase: resources
+    dependencies:
+      - package: YubiKit
+      - package: YkpassCore
+      - sdk: AuthenticationServices.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.liran.noam.ykpass.autofill
+        TARGETED_DEVICE_FAMILY: "1,2"
+    info:
+      path: YkpassAutoFill/Info.plist
+      properties:
+        NFCReaderUsageDescription: ykpass reads your YubiKey over NFC to generate passwords.
+        com.apple.developer.nfc.readersession.iso7816.select-identifiers:
+          - A000000527200101 # YubiKey OTP application (HMAC-SHA1 challenge-response)
+          - A000000527471117 # YubiKey management application
+        CFBundleDisplayName: ykpass
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.authentication-services-credential-provider-ui
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).CredentialProviderViewController
+          NSExtensionAttributes:
+            ASCredentialProviderExtensionShowsConfigurationUI: false
+            ASCredentialProviderExtensionCapabilities:
+              ProvidesPasswords: true
+              ProvidesTextToInsert: true
+    entitlements:
+      path: YkpassAutoFill/YkpassAutoFill.entitlements
+      properties:
+        com.apple.developer.nfc.readersession.formats: [TAG]
+        com.apple.developer.authentication-services.autofill-credential-provider: true
+
+schemes:
+  Ykpass:
+    build:
+      targets:
+        Ykpass: all
+        YkpassAutoFill: all
+    run:
+      config: Debug
+    archive:
+      config: Release

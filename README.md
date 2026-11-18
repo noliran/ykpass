@@ -34,11 +34,16 @@ I recommend using Chrome's foreground domain name as the default value; The foll
 1. Build the ykpassDroid app and install (hopefully I'll find time to deploy it to the Play Store).
 1. Install [ykDroid app](https://play.google.com/store/apps/details?id=net.pp3345.ykdroid) from Play Store (or build from [source](https://github.com/pp3345/ykDroid))
 
+## iOS
+1. Build the iOS app from the `ios` directory (see [ios/README.md](ios/README.md)).
+1. Use a YubiKey with NFC, or a YubiKey 5Ci (Lightning). Optionally enable ykpass as an AutoFill provider.
+
 # Password generation flavors
 There are several password flavors, determined by the suffix of the requested site name / URL:
 * `!      ` - 16 characters of Base64 (`A-Z a-z 0-9 +/`)
 * `@      ` - 12 characters of Base32 (`A–Z 2–7`).
 * `#      ` - 8 characters of Base32 (`A–Z 2–7`).
+* `$      ` - 8 characters of Base32, with the last 4 in lower case.
 
 The default if no suffix is present is 16 characters of Ascii85 (`A-Z a-u 0-9 !"#$%&\'()*+,-./:;<=>?@[\\]^_`).
 
