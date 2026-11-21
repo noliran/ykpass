@@ -53,6 +53,7 @@ The **iOS TestFlight** GitHub Actions workflow (`.github/workflows/testflight.ym
    If you used a different bundle ID, also add it under the **Variables** tab as `IOS_BUNDLE_ID`.
 
 ### Uploading a build
+Every push to `master` that changes the app (anything under `ios/` except Markdown) uploads a new build automatically. Until the secrets above are set, these runs are skipped. To upload by hand:
 1. On GitHub, go to *Actions → iOS TestFlight → Run workflow*.
 2. After about 15 minutes, plus a few minutes of processing at Apple, the build appears in App Store Connect under *TestFlight*.
 3. Add yourself as an internal tester under *TestFlight → Internal Testing*. Then install the **TestFlight** app on your iPhone and install ykpass from it.
