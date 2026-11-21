@@ -37,11 +37,14 @@ The **iOS TestFlight** GitHub Actions workflow (`.github/workflows/testflight.ym
 2. **Register the bundle IDs** at [developer.apple.com → Identifiers](https://developer.apple.com/account/resources/identifiers/list) (*+ → App IDs → App*):
    - `org.liran.noam.ykpass` (or your own ID): enable **NFC Tag Reading** and **AutoFill Credential Provider**.
    - `org.liran.noam.ykpass.autofill`: enable the same two capabilities.
-3. **Create the app** in [App Store Connect](https://appstoreconnect.apple.com/apps) (*+ → New App*): platform iOS, any name (it must be unique on the App Store, e.g. "ykpass-<yourname>"), bundle ID from step 2, any SKU.
-4. **Create an API key** in App Store Connect under *Users and Access → Integrations → App Store Connect API → Team Keys*.
+3. **Register your iPhone** under [developer.apple.com → Devices](https://developer.apple.com/account/resources/devices/list) (*+*, platform iOS, any name, plus the iPhone's UDID). Xcode signs the archive for development before re-signing it for TestFlight, and that needs at least one registered device. Without one, the build fails with "Your team has no devices from which to generate a provisioning profile". To find the UDID, connect the iPhone to a computer:
+   - **Mac:** in Finder, select the iPhone and click the text under its name until the UDID shows.
+   - **Windows:** use the Apple Devices app (or iTunes) the same way.
+4. **Create the app** in [App Store Connect](https://appstoreconnect.apple.com/apps) (*+ → New App*): platform iOS, any name (it must be unique on the App Store, e.g. "ykpass-<yourname>"), bundle ID from step 2, any SKU.
+5. **Create an API key** in App Store Connect under *Users and Access → Integrations → App Store Connect API → Team Keys*.
    - Give it the **Admin** role. Cloud signing needs it to create the distribution certificate.
    - Download the `.p8` file (you can only download it once). Note the *Key ID* and the *Issuer ID*.
-5. **Add repository secrets** under GitHub → *Settings → Secrets and variables → Actions → Secrets*:
+6. **Add repository secrets** under GitHub → *Settings → Secrets and variables → Actions → Secrets*:
 
    | Secret | Value |
    | --- | --- |
