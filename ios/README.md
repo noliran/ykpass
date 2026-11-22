@@ -15,7 +15,7 @@ A native SwiftUI port of ykpassDroid. It uses Yubico's [YubiKit](https://github.
 - **AutoFill only works with NFC keys**, because app extensions can't use Lightning accessories. With a 5Ci, generate the password in the app and copy it.
 
 ## Building
-Requirements: a Mac with Xcode 16+, [XcodeGen](https://github.com/yonaskolb/XcodeGen), and an Apple Developer Program membership. A free Apple ID may not be able to sign the NFC and AutoFill entitlements, and its builds expire after 7 days. No Mac? See [TestFlight](#testflight-no-mac-needed) below.
+Requirements: a Mac with Xcode 26+ (App Store Connect rejects builds from older SDKs), [XcodeGen](https://github.com/yonaskolb/XcodeGen), and an Apple Developer Program membership. A free Apple ID may not be able to sign the NFC and AutoFill entitlements, and its builds expire after 7 days. No Mac? See [TestFlight](#testflight-no-mac-needed) below.
 
 ```sh
 brew install xcodegen
