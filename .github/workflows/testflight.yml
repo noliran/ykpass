@@ -2,7 +2,16 @@ name: iOS TestFlight
 
 # Builds, signs (Apple cloud signing via an App Store Connect API key) and uploads to TestFlight.
 # Setup: see ios/README.md, "TestFlight".
+# Runs automatically when the app changes on master, and can be started by hand
+# (Actions → iOS TestFlight → Run workflow). Automatic runs are skipped until the secrets are set.
 on:
+  push:
+    branches: [master]
+    paths:
+      - "ios/**"
+      - "!ios/**/*.md"
+      - "android/app/src/main/assets/fa-solid-900.ttf" # bundled in the iOS app
+      - ".github/workflows/testflight.yml"
   workflow_dispatch:
     inputs:
       build_number:
@@ -15,7 +24,35 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.secrets.outputs.configured }}
+    steps:
+      - id: secrets
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          ASC_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+        run: |
+          missing=""
+          for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          if [ -z "$missing" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "::error::Missing secrets:$missing (see ios/README.md, TestFlight)"
+            exit 1
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::TestFlight upload skipped: secrets not set up yet (missing:$missing). See ios/README.md, TestFlight."
+          fi
+
   testflight:
+    needs: check
+    if: needs.check.outputs.configured == 'true'
     runs-on: macos-15
     timeout-minutes: 60
     env:
@@ -26,14 +63,6 @@ jobs:
       BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID || 'org.liran.noam.ykpass' }}
       BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
     steps:
-      - name: Check secrets
-        run: |
-          missing=0
-          for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
-            if [ -z "${!name}" ]; then echo "::error::Secret for $name is not set (see ios/README.md, TestFlight)"; missing=1; fi
-          done
-          exit $missing
-
       - uses: actions/checkout@v4
 
       - name: Install XcodeGen
