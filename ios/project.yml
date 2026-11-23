@@ -49,6 +49,8 @@ targets:
       path: Ykpass/Info.plist
       properties:
         NFCReaderUsageDescription: ykpass reads your YubiKey over NFC to generate passwords.
+        # Not used by ykpass; required because YubiKit contains an (unused) QR-code scanner.
+        NSCameraUsageDescription: ykpass does not use the camera.
         com.apple.developer.nfc.readersession.iso7816.select-identifiers:
           - A000000527200101 # YubiKey OTP application (HMAC-SHA1 challenge-response)
           - A000000527471117 # YubiKey management application
@@ -90,6 +92,8 @@ targets:
       path: YkpassAutoFill/Info.plist
       properties:
         NFCReaderUsageDescription: ykpass reads your YubiKey over NFC to generate passwords.
+        # Not used by ykpass; required because YubiKit contains an (unused) QR-code scanner.
+        NSCameraUsageDescription: ykpass does not use the camera.
         com.apple.developer.nfc.readersession.iso7816.select-identifiers:
           - A000000527200101 # YubiKey OTP application (HMAC-SHA1 challenge-response)
           - A000000527471117 # YubiKey management application
